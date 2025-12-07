@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* * GLOBAL BACKGROUND UPGRADE: 
+ * We use multiple backgrounds (linear gradient + radial gradient) 
+ * to create a dark, textured, and slightly futuristic background 
+ * that complements the blue primary color.
+ */
+body {
+  /* Ensure the body fills the entire viewport */
+  min-height: 100vh;
+  /* Use a dark background color that acts as the base */
+  @apply bg-gray-950 text-gray-100;
+
+  /* --- APPLY A SUBTLE RADIAL GRADIENT EFFECT (Optional) --- */
+  background-image: 
+    /* 1. Subtle Radial Glow (Centered on the screen) */
+    radial-gradient(at 50% 0%, rgba(30, 64, 175, 0.1) 0%, transparent 50%), 
+    /* 2. Top-down dark overlay (Optional) */
+    linear-gradient(to bottom, #111827, #1f2937); 
+  
+  /* Make the background cover the entire element */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  
+  /* We use the custom Inter font family defined in tailwind.config.js */
+  font-family: 'Inter', sans-serif;
+}
