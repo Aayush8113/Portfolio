@@ -20,8 +20,7 @@ const ProjectCard = ({ project }) => {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.2 }}
-      className="group bg-gray-900/90 border border-gray-700/70 rounded-2xl shadow-2xl overflow-hidden 
-                 h-full flex flex-col backdrop-blur-md relative transition-all duration-300"
+      className="relative flex flex-col h-full overflow-hidden transition-all duration-300 border shadow-2xl group bg-gray-900/90 border-gray-700/70 rounded-2xl backdrop-blur-md"
       whileHover={{
         y: -10,
         scale: 1.03,
@@ -40,12 +39,11 @@ const ProjectCard = ({ project }) => {
         <img
           src={project.imageUrl}
           alt={project.title}
-          className="w-full h-48 object-cover transform 
-                     group-hover:scale-110 transition-all duration-700"
+          className="object-cover w-full h-48 transition-all duration-700 transform group-hover:scale-110"
         />
 
         {/* Cinematic gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-gray-900/10 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-gray-950/80 via-gray-900/10 to-transparent" />
 
         {/* Top-left subtle label (optional) */}
         <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold 
@@ -62,15 +60,14 @@ const ProjectCard = ({ project }) => {
       </motion.div>
 
       {/* CONTENT SECTION */}
-      <div className="p-5 flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow p-5">
         <h3
-          className="text-xl md:text-2xl font-bold text-white tracking-tight mb-2
-                     group-hover:text-indigo-300 transition-colors"
+          className="mb-2 text-xl font-bold tracking-tight text-white transition-colors md:text-2xl group-hover:text-indigo-300"
         >
           {project.title}
         </h3>
 
-        <p className="text-gray-400 text-sm mb-4 leading-relaxed line-clamp-3">
+        <p className="mb-4 text-sm leading-relaxed text-gray-400 line-clamp-3">
           {project.description}
         </p>
 
@@ -84,8 +81,7 @@ const ProjectCard = ({ project }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.06, duration: 0.3 }}
-              className="bg-gray-800/80 text-blue-300 text-xs font-medium px-3 py-1 rounded-full 
-                         hover:bg-gray-700/90 transition-colors"
+              className="px-3 py-1 text-xs font-medium text-blue-300 transition-colors rounded-full bg-gray-800/80 hover:bg-gray-700/90"
             >
               {tag}
             </motion.span>
@@ -93,15 +89,15 @@ const ProjectCard = ({ project }) => {
         </div>
 
         {/* FOOTER LINKS */}
-        <div className="mt-auto pt-4 border-t border-gray-700/80">
-          <div className="flex justify-between items-center">
+        <div className="pt-4 mt-auto border-t border-gray-700/80">
+          <div className="flex items-center justify-between">
             {/* Internal "View Details" link */}
             <Link
               to={`/work/${project._id}`}
-              className="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 transition-colors group"
+              className="flex items-center gap-1 font-semibold text-indigo-400 transition-colors hover:text-indigo-300 group"
             >
               View Details
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Link>
 
             {/* External links */}
@@ -111,7 +107,7 @@ const ProjectCard = ({ project }) => {
                   href={project.githubLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-transform duration-200 hover:scale-110"
+                  className="text-gray-400 transition-transform duration-200 hover:text-white hover:scale-110"
                   aria-label="GitHub Repository"
                 >
                   <Github className="w-6 h-6" />
@@ -122,7 +118,7 @@ const ProjectCard = ({ project }) => {
                   href={project.liveLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-transform duration-200 hover:scale-110"
+                  className="text-gray-400 transition-transform duration-200 hover:text-white hover:scale-110"
                   aria-label="Live Demo"
                 >
                   <ExternalLink className="w-6 h-6" />

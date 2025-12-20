@@ -170,7 +170,7 @@
 //             transition={{ delay: 0.6, duration: 0.4 }}
 //           >
 //             <motion.div
-//               className="h-full w-1/2 bg-gradient-to-r from-indigo-400 via-sky-400 to-cyan-300"
+//               className="w-1/2 h-full bg-gradient-to-r from-indigo-400 via-sky-400 to-cyan-300"
 //               animate={{ x: ["-100%", "100%"] }}
 //               transition={{
 //                 repeat: Infinity,
@@ -380,7 +380,7 @@
 //             transition={{ delay: 1.0, duration: 0.4 }} // Starts while shapes are settling
 //           >
 //             <motion.div
-//               className="h-full w-1/2 bg-gradient-to-r from-indigo-400 via-sky-400 to-cyan-300"
+//               className="w-1/2 h-full bg-gradient-to-r from-indigo-400 via-sky-400 to-cyan-300"
 //               animate={{ x: ["-100%", "100%"] }}
 //               transition={{
 //                 repeat: Infinity,
@@ -533,14 +533,7 @@ const Preloader = ({ onAnimationComplete }) => {
       >
         {/* Centered wrapper */}
         <motion.div
-          className="
-            flex flex-col items-center justify-center
-            w-full max-w-md
-            gap-4 sm:gap-5
-
-            lg:max-w-3xl lg:gap-5
-            xl:max-w-4xl
-          "
+          className="flex flex-col items-center justify-center w-full max-w-md gap-4 sm:gap-5 lg:max-w-3xl lg:gap-5 xl:max-w-4xl"
           initial="initial"
           animate="animate"
         >
@@ -558,27 +551,10 @@ const Preloader = ({ onAnimationComplete }) => {
               transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
             >
               <div
-                className="
-                  absolute 
-                  w-20 h-20 
-                  sm:w-24 sm:h-24 
-                  lg:w-28 lg:h-28
-                  xl:w-30 xl:h-30
-                  rounded-full 
-                  bg-gradient-to-tr from-indigo-500/30 via-sky-400/20 to-cyan-300/20 
-                  blur-xl opacity-60
-                "
+                className="absolute w-20 h-20 rounded-full sm:w-24 sm:h-24 lg:w-28 lg:h-28 xl:w-30 xl:h-30 bg-gradient-to-tr from-indigo-500/30 via-sky-400/20 to-cyan-300/20 blur-xl opacity-60"
               />
               <motion.div
-                className="
-                  absolute 
-                  w-16 h-16 
-                  sm:w-20 sm:h-20 
-                  lg:w-24 lg:h-24
-                  xl:w-26 xl:h-26
-                  rounded-full 
-                  border-2 border-indigo-400/40
-                "
+                className="absolute w-16 h-16 border-2 rounded-full sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-26 xl:h-26 border-indigo-400/40"
                 animate={{
                   scale: [1, 1.05, 1],
                   opacity: [0.6, 1, 0.6],
@@ -610,8 +586,7 @@ const Preloader = ({ onAnimationComplete }) => {
             >
               {/* Reflection */}
               <div
-                className="absolute inset-0 bg-gradient-to-br 
-                           from-indigo-500/25 via-sky-400/10 to-transparent"
+                className="absolute inset-0 bg-gradient-to-br from-indigo-500/25 via-sky-400/10 to-transparent"
               />
 
               {/* "AT" → "<AT/>" morph */}
@@ -784,12 +759,7 @@ const Preloader = ({ onAnimationComplete }) => {
 
           {/* --- STACK CHIPS (ALL DEVICES) --- */}
           <div
-            className="
-              flex flex-wrap items-center justify-center
-              gap-2 sm:gap-3 lg:gap-4
-              max-w-xs sm:max-w-md lg:max-w-2xl
-              mt-2
-            "
+            className="flex flex-wrap items-center justify-center max-w-xs gap-2 mt-2 sm:gap-3 lg:gap-4 sm:max-w-md lg:max-w-2xl"
           >
             {chips.map((chip, index) => (
               <motion.div
@@ -857,7 +827,7 @@ const Preloader = ({ onAnimationComplete }) => {
             transition={{ delay: 0.7, duration: 0.3 }}
           >
             <motion.div
-              className="h-full w-1/2 bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-300"
+              className="w-1/2 h-full bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-300"
               animate={{ x: ["-100%", "100%"] }}
               transition={{
                 duration: 1.4,
@@ -1206,7 +1176,7 @@ export default Preloader;
 
 //                     {/* GEL PROGRESS BAR */}
 //                     <motion.div
-//                         className="w-56 md:w-72 h-2 bg-slate-800/80 rounded-full overflow-hidden shadow-inner"
+//                         className="w-56 h-2 overflow-hidden rounded-full shadow-inner md:w-72 bg-slate-800/80"
 //                         initial={{ opacity: 0, y: 8 }}
 //                         animate={{ opacity: 1, y: 0 }}
 //                         transition={{ delay: 1.5 }}

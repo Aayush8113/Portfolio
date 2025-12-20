@@ -2,29 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-/* * GLOBAL BACKGROUND UPGRADE: 
- * We use multiple backgrounds (linear gradient + radial gradient) 
- * to create a dark, textured, and slightly futuristic background 
- * that complements the blue primary color.
- */
+/* =========================================
+   1. GLOBAL STYLES & BACKGROUNDS
+   ========================================= */
 body {
   /* Ensure the body fills the entire viewport */
   min-height: 100vh;
-  /* Use a dark background color that acts as the base */
+  
+  /* Use a dark background color as the base */
   @apply bg-gray-950 text-gray-100;
 
-  /* --- APPLY A SUBTLE RADIAL GRADIENT EFFECT (Optional) --- */
+  /* --- CINEMATIC BACKGROUND --- */
   background-image: 
-    /* 1. Subtle Radial Glow (Centered on the screen) */
-    radial-gradient(at 50% 0%, rgba(30, 64, 175, 0.1) 0%, transparent 50%), 
-    /* 2. Top-down dark overlay (Optional) */
-    linear-gradient(to bottom, #111827, #1f2937); 
+    /* 1. Subtle Radial Glow (Centered) */
+    radial-gradient(at 50% 0%, rgba(30, 64, 175, 0.12) 0%, transparent 60%), 
+    /* 2. Top-down dark overlay */
+    linear-gradient(to bottom, #020617, #0f172a); 
   
-  /* Make the background cover the entire element */
+  /* Make the background fixed (parallax-like effect) */
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
   
-  /* We use the custom Inter font family defined in tailwind.config.js */
-  font-family: 'Inter', sans-serif;
+  /* Font Family */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Prevent horizontal scroll on mobile animations */
+  overflow-x: hidden;
 }
+
+/* =========================================
+   2. PERFORMANCE UTILITIES (Crucial for Framer Motion)
+   ========================================= */
+
+/* * Apply this class to heavy animated elements (Hero, Cards, Modals).
+ * It forces the browser to use the GPU instead of the CPU.
+ */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Hardware acceleration hack */
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* =========================================
+   3. AESTHETIC UPGRADES
+   ========================================= */
+
+/* Smooth Scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Premium Text Selection Color */
+::selection {
+  @apply bg-blue-500/30 text-blue-200;
+}
+
+/* --- CUSTOM SCROLLBAR (Chrome, Edge, Safari) --- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617; /* Matches body bg */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155; /* Slate-700 */
+  border-radius: 5px;
+  border: 2px solid #020617; /* Creates padding effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569; /* Slate-600 */
+}
+

@@ -1,46 +1,31 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-// Blueprint for a single contact message
-const messageSchema = new Schema(
-    {
-        // Sender's name
-        name: {
-            type: String,
-            required: [true, 'Please provide your name'],
-            trim: true,
-        },
-        // Sender's email
-        email: {
-            type: String,
-            required: [true, 'Please provide your email'],
-            lowercase: true, // Converts email to lowercase
-            trim: true,
-            // Regex for basic email validation
-            match: [
-                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                'Please fill a valid email address',
-            ],
-        },
-        // --- ADDED PHONE FIELD ---
-        phone: {
-            type: String,
-            required: [true, 'Phone number is required'],
-            trim: true,
-            // Basic regex: 10-15 chars, can include +, -, (), spaces.
-            match: [/^[+\d()-\s]{10,15}$/, 'Please enter a valid phone number (10-15 digits)'],
-        },
-        // --- END OF ADDITION ---
-        
-        // Sender's message
-        message: {
-            type: String,
-            required: [true, 'Please provide a message'],
-        },
-    },
-    {
-        timestamps: true, // Adds 'createdAt' and 'updatedAt' fields
-    }
-);
+const messageSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Please add a name'],
+    trim: true,
+    maxlength: [50, 'Name can not be more than 50 characters']
+  },
+  email: {
+    type: String,
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      'Please add a valid email'
+    ],
+    required: [true, 'Please add an email']
+  },
+  phone: {
+    type: String,
+    maxlength: [20, 'Phone number can not be longer than 20 characters']
+  },
+  message: {
+    type: String,
+    required: [true, 'Please add a message'],
+    maxlength: [1000, 'Message cannot be more than 1000 characters']
+  }
+}, {
+  timestamps: true // Automatically manages createdAt and updatedAt
+});
 
 module.exports = mongoose.model('Message', messageSchema);

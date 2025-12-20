@@ -548,243 +548,144 @@
 
 
 
-// /frontend/src/pages/ContactPage.jsx
-
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  MessageSquareQuote,
-  Mail,
-  Rocket,
-  Monitor,
-  Database,
-  Coffee,
+import { 
+  Mail, Linkedin, Github, Terminal, 
+  ExternalLink, Cpu, Globe, Check
 } from "lucide-react";
 import ContactForm from "../components/ContactForm";
+import { FaWhatsapp } from 'react-icons/fa';
 
-// ---------------------------------------------------------
-// ✨ Background Particle Generator (Cinematic Edition)
-// ---------------------------------------------------------
-const FloatingParticles = () => {
-  const particles = Array.from({ length: 16 });
+// --- Background ---
+const CyberGrid = () => (
+  <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute inset-0 bg-[#020617]" />
+    <div className="absolute inset-0 bg-[linear-gradient(rgba(30,41,59,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(30,41,59,0.2)_1px,transparent_1px)] bg-[size:50px_50px]" />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent" />
+  </div>
+);
 
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {particles.map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1.5 h-1.5 rounded-full bg-blue-400/40 shadow-[0_0_10px_rgba(96,165,250,0.7)]"
-          initial={{
-            // use percentage instead of window.* to avoid issues
-            x: `${Math.random() * 100}%`,
-            y: `${Math.random() * 100}%`,
-            scale: Math.random() * 0.8 + 0.4,
-            opacity: 0.2 + Math.random() * 0.5,
-          }}
-          animate={{
-            y: ["0%", "-12%", "0%"],
-            x: ["0%", "6%", "-4%", "0%"],
-            opacity: [0.3, 0.9, 0.3],
-          }}
-          transition={{
-            duration: 8 + Math.random() * 5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
+// --- VS Code Style Card ---
+const CodeProfile = () => (
+  <div className="hidden lg:block bg-[#0f172a] rounded-lg border border-slate-800 shadow-2xl overflow-hidden font-mono text-[11px] mb-8">
+    <div className="bg-[#1e293b] px-4 py-2 flex items-center justify-between border-b border-slate-700/50">
+      <span className="text-slate-400">user_profile.tsx</span>
+      <div className="flex gap-1.5">
+        <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+      </div>
     </div>
-  );
-};
+    <div className="p-5 text-slate-400 leading-relaxed">
+      <p><span className="text-purple-400">const</span> <span className="text-blue-400">Engineer</span> = <span className="text-yellow-300">{`{`}</span></p>
+      <div className="pl-4 space-y-1">
+        <p>name: <span className="text-green-400">"Aayush Tripathi"</span>,</p>
+        <p>status: <span className="text-green-400">"Online"</span>,</p>
+        <p>stack: <span className="text-yellow-300">["MERN", "NextJS", "AWS"]</span>,</p>
+        <p>availability: <span className="text-blue-400">true</span>,</p>
+      </div>
+      <p><span className="text-yellow-300">{`}`}</span>;</p>
+    </div>
+  </div>
+);
 
-// ---------------------------------------------------------
-// ✨ Title Animation
-// ---------------------------------------------------------
-const titleVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.96 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.7, ease: "easeOut" },
-  },
-};
-
-// ---------------------------------------------------------
-// ✨ Section Fade-in Animation
-// ---------------------------------------------------------
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
-};
-
-// ---------------------------------------------------------
-// ★★★★★ MAIN CONTACT PAGE
-// ---------------------------------------------------------
 const ContactPage = () => {
   return (
-    <motion.main
-      initial="hidden"
-      animate="visible"
-      className="relative min-h-[calc(100vh-4rem)]" // give breathing room under navbar
+    <motion.main 
+      className="relative min-h-[calc(100vh-4rem)] text-slate-200 flex items-center justify-center py-10"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
     >
-      {/* Background Particles */}
-      <FloatingParticles />
+      <CyberGrid />
 
-      <div className="relative container mx-auto max-w-6xl px-4 sm:px-6 lg:px-10 py-10 lg:py-16 z-10">
-        {/* Title */}
-        <motion.header
-          variants={titleVariants}
-          className="mb-10 sm:mb-12 lg:mb-16 text-center"
-        >
-          <h1
-            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white 
-                       drop-shadow-[0_0_10px_rgba(99,102,241,0.7)] 
-                       flex flex-wrap items-center justify-center gap-3"
-          >
-            <MessageSquareQuote className="w-8 h-8 sm:w-10 sm:h-10 text-indigo-400" />
-            <span>Let&apos;s Build Something Great</span>
+      <div className="container mx-auto max-w-7xl px-4 relative z-10">
+        
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-900/80 border border-slate-700/50 backdrop-blur-md mb-6">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span className="text-xs font-bold tracking-widest text-slate-300 uppercase">System Operational</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-4">
+            INITIATE <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">PROTOCOL</span>
           </h1>
-          <p className="mt-4 text-sm sm:text-base text-gray-300 max-w-2xl mx-auto">
-            Share your idea, project, or even just a rough concept — I’ll help
-            you turn it into a clean, fast, and scalable MERN experience.
+          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto font-mono">
+            SECURE CHANNEL OPEN. DEPLOY YOUR PROJECT REQUREMENTS BELOW.
           </p>
-        </motion.header>
+        </div>
 
-        {/* ================== MAIN GRID ================== */}
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 xl:gap-20 items-start">
-          {/* --------------------------------------------- */}
-          {/* LEFT SIDE — INFO PANEL */}
-          {/* --------------------------------------------- */}
-          <motion.section
-            className="w-full lg:w-1/2 space-y-6"
-            variants={fadeInUp}
-          >
-            <motion.h2
-              className="text-2xl sm:text-3xl font-semibold text-white 
-                         drop-shadow-[0_0_12px_rgba(99,102,241,0.6)]"
-              variants={fadeInUp}
-            >
-              Why We Should Talk
-            </motion.h2>
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          
+          {/* --- LEFT: INFO & LINKS --- */}
+          <div className="lg:col-span-5 space-y-6">
+            <CodeProfile />
+            
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-4">
+              <Terminal className="w-4 h-4" /> Uplink Channels
+            </h3>
 
-            <motion.p
-              className="text-gray-300 leading-relaxed text-sm sm:text-base"
-              variants={fadeInUp}
-            >
-              I collaborate with founders, developers, and teams to craft
-              beautiful, scalable, and high-performance digital experiences —
-              the kind that feel modern, polished, and reliable.
-            </motion.p>
-
-            <motion.p
-              className="text-gray-300 leading-relaxed text-sm sm:text-base"
-              variants={fadeInUp}
-            >
-              If you&apos;re looking for a MERN developer who cares about clean
-              architecture, detailed UI/UX, and long-term maintainability —
-              you&apos;re in the right place.
-            </motion.p>
-
-            <motion.p
-              className="text-gray-300 font-semibold text-sm sm:text-base"
-              variants={fadeInUp}
-            >
-              I can help you with:
-            </motion.p>
-
-            {/* Feature List */}
-            <motion.ul
-              className="text-gray-300 space-y-3 sm:space-y-4 text-sm sm:text-base"
-              variants={fadeInUp}
-            >
-              <li className="flex gap-3 items-start">
-                <Rocket className="text-blue-400 w-6 h-6 flex-shrink-0 mt-0.5" />
-                <span>Complete full-stack web app development (MERN)</span>
-              </li>
-
-              <li className="flex gap-3 items-start">
-                <Monitor className="text-blue-400 w-6 h-6 flex-shrink-0 mt-0.5" />
-                <span>Lightning-fast frontends using React + Tailwind CSS</span>
-              </li>
-
-              <li className="flex gap-3 items-start">
-                <Database className="text-blue-400 w-6 h-6 flex-shrink-0 mt-0.5" />
-                <span>Scalable APIs and backend logic with Express + MongoDB</span>
-              </li>
-
-              <li className="flex gap-3 items-start">
-                <Coffee className="text-blue-400 w-6 h-6 flex-shrink-0 mt-0.5" />
-                <span>Or just a friendly tech chat to explore ideas</span>
-              </li>
-            </motion.ul>
-
-            {/* Email Link + Small Helper Text */}
-            <div className="pt-2 space-y-3">
-              <motion.a
-                variants={fadeInUp}
-                href="mailto:aayushtripathi.tech@gmail.com"
-                className="inline-flex items-center justify-center px-6 py-3 
-                           bg-blue-600 text-white font-semibold rounded-lg 
-                           shadow-xl hover:bg-blue-700 hover:shadow-blue-500/40 
-                           transition-all text-sm sm:text-base"
-              >
-                <Mail className="inline w-5 h-5 mr-2" />
-                Email Me Directly
-              </motion.a>
-
-              <motion.p
-                variants={fadeInUp}
-                className="text-xs sm:text-sm text-gray-400"
-              >
-                Prefer email instead of a form? No problem — I read every message
-                personally.
-              </motion.p>
-            </div>
-          </motion.section>
-
-          {/* --------------------------------------------- */}
-          {/* RIGHT SIDE — FORM PANEL */}
-          {/* --------------------------------------------- */}
-          <motion.section
-            className="w-full lg:w-1/2"
-            variants={fadeInUp}
-          >
-            <motion.div
-              className="relative bg-gray-900/70 border border-gray-700/70 
-                         rounded-xl shadow-2xl p-5 sm:p-6 md:p-8 
-                         backdrop-blur-md overflow-hidden"
-              initial={{ opacity: 0.3, scale: 0.97, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              {/* Glow border animation */}
-              <motion.div
-                className="pointer-events-none absolute inset-0 rounded-xl border border-indigo-500/30"
-                animate={{ opacity: [0.2, 0.7, 0.2] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              />
-
-              <div className="relative z-10">
-                <h3 className="text-2xl sm:text-3xl font-bold text-white text-center mb-3 sm:mb-4 
-                               drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]">
-                  Send Me a Message
-                </h3>
-
-                <p className="text-center text-gray-300 mb-6 sm:mb-8 flex items-center justify-center gap-2 text-sm sm:text-base">
-                  <Mail className="w-5 h-5 text-blue-400" />
-                  I usually respond as soon as I can.
-                </p>
-
-                {/* FORM ITSELF */}
-                <ContactForm />
+            {/* Email Card */}
+            <a href="mailto:aayushtripathi.tech@gmail.com" 
+               className="group flex items-center gap-4 p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-900 transition-all">
+              <div className="w-12 h-12 rounded bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+                <Mail className="w-5 h-5" />
               </div>
-            </motion.div>
-          </motion.section>
+              <div>
+                <p className="text-[10px] text-slate-500 font-mono uppercase">Priority Mail</p>
+                <p className="text-white font-semibold text-sm group-hover:text-blue-400 transition-colors">aayushtripathi.tech</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-slate-700 ml-auto group-hover:text-blue-400" />
+            </a>
+
+            {/* LinkedIn Card */}
+            <a href="https://www.linkedin.com/in/aayushtripathi081103/" target="_blank" rel="noreferrer"
+               className="group flex items-center gap-4 p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900 transition-all">
+              <div className="w-12 h-12 rounded bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                <Linkedin className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-[10px] text-slate-500 font-mono uppercase">Professional Net</p>
+                <p className="text-white font-semibold text-sm group-hover:text-indigo-400 transition-colors">LinkedIn Profile</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-slate-700 ml-auto group-hover:text-indigo-400" />
+            </a>
+
+            <div className="grid grid-cols-2 gap-4">
+               <a href="https://github.com/Aayush8113" target="_blank" rel="noreferrer"
+                 className="group p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-white/20 transition-all text-center hover:bg-slate-900">
+                  <Github className="w-6 h-6 text-slate-500 group-hover:text-white mx-auto mb-2 transition-colors" />
+                  <span className="text-xs font-bold text-slate-400">GITHUB</span>
+               </a>
+               <a href="https://wa.me/+919737759381" target="_blank" rel="noreferrer"
+                 className="group p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-emerald-500/50 transition-all text-center hover:bg-slate-900">
+                  <FaWhatsapp className="w-6 h-6 text-slate-500 group-hover:text-emerald-400 mx-auto mb-2 transition-colors" />
+                  <span className="text-xs font-bold text-slate-400">WHATSAPP</span>
+               </a>
+            </div>
+          </div>
+
+          {/* --- RIGHT: THE FORM --- */}
+          <div className="lg:col-span-7">
+            <div className="bg-[#0f172a]/80 backdrop-blur-xl rounded-2xl border border-slate-800 p-6 md:p-8 shadow-2xl relative">
+              <div className="absolute top-0 right-0 p-6 opacity-10">
+                <Cpu className="w-32 h-32 text-blue-500" strokeWidth={0.5} />
+              </div>
+              
+              <div className="relative z-10 mb-8 border-b border-slate-800 pb-4">
+                <h2 className="text-lg font-bold text-white flex items-center gap-3">
+                  <Globe className="w-5 h-5 text-blue-500" />
+                  DATA ENTRY TERMINAL
+                </h2>
+              </div>
+
+              <ContactForm />
+            </div>
+          </div>
+
         </div>
       </div>
     </motion.main>

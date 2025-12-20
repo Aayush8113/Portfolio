@@ -1,22 +1,41 @@
-// 1. Import mongoose
 const mongoose = require('mongoose');
 
-// 2. Create the connectDB function
-const connectDB = async () => {
-  try {
-    // 3. Try to connect to the database
-    //    It uses the MONGODB_URI string from your .env file
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+// Vercel Serverless behavior: Define a global cache to prevent 
+// connecting to the DB on every single request.
+let cached = global.mongoose;
 
-    // 4. If connection is successful, log it
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  
-  } catch (error) {
-    // 5. If connection fails, log the error and exit
-    console.error(`Error connecting to MongoDB: ${error.message}`);
-    process.exit(1); // Exits the process with a failure code
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+const connectDB = async () => {
+  // 1. If we have a cached connection, use it.
+  if (cached.conn) {
+    return cached.conn;
   }
+
+  // 2. If no connection promise exists, create a new one.
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false, // Disable Mongoose buffering for faster serverless errors
+    };
+
+    cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {
+      console.log('✅ New MongoDB Connection Established');
+      return mongoose;
+    });
+  }
+
+  // 3. Await the promise and save the connection
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    console.error('❌ MongoDB Connection Error:', e);
+    throw e;
+  }
+
+  return cached.conn;
 };
 
-// 6. Export the function so server.js can use it
 module.exports = connectDB;

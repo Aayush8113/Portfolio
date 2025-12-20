@@ -1,278 +1,268 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Phone, MessageSquare, Send, Loader2, Check } from 'lucide-react';
-
-// Variant for the success message (Internal animation)
-const successVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { opacity: 1, scale: 1, transition: { type: 'spring' } },
-};
+import { 
+  User, Mail, Phone, MessageSquare, Send, 
+  Loader2, CheckCircle2, AlertTriangle, XCircle, ShieldCheck 
+} from 'lucide-react';
 
 const ContactForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-  });
-
-  // --- 1. NEW STATE FOR FIELD-SPECIFIC ERRORS ---
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [touched, setTouched] = useState({});
   const [errors, setErrors] = useState({});
+  const [status, setStatus] = useState({ loading: false, success: false, error: null });
 
-  const [status, setStatus] = useState({
-    loading: false,
-    success: false,
-    error: null,
-  });
+  // --- 🛡️ SECURITY & VALIDATION LOGIC ---
+  const validateField = (name, value) => {
+    // 1. Check Empty
+    if (!value || value.trim() === '') return 'REQUIRED FIELD';
 
-  // --- 2. VALIDATION LOGIC ---
-  const validate = () => {
-    const newErrors = {};
+    switch (name) {
+      case 'name':
+        // Allow letters, spaces, and simple accents. No numbers or symbols.
+        return /^[a-zA-Z\s\u00C0-\u00FF]+$/.test(value) 
+          ? null 
+          : 'ALPHABETS ONLY';
 
-    // Name Validation (Letters and spaces only)
-    if (!formData.name) {
-      newErrors.name = 'Name is required';
-    } else if (!/^[a-zA-Z\s]+$/.test(formData.name)) {
-      newErrors.name = 'Name can only contain letters and spaces';
+      case 'email':
+        // Strict Email Regex
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) 
+          ? null 
+          : 'INVALID EMAIL FORMAT';
+
+      case 'phone':
+        // 🌍 INTERNATIONAL FORMAT ENFORCEMENT
+        // 1. Must contain a '+'
+        if (!value.includes('+')) return 'MISSING COUNTRY CODE (e.g. +91)';
+        
+        // 2. Strip formatting (spaces, dashes) to check digits
+        const cleanNumber = value.replace(/[\s\-\(\)]/g, '');
+        
+        // 3. Check for E.164 Standard (e.g., +919876543210)
+        // \+ followed by 10 to 15 digits
+        return /^\+[0-9]{10,15}$/.test(cleanNumber) 
+          ? null 
+          : 'INVALID NUMBER (+CODE REQUIRED)';
+
+      case 'message':
+        // Security: Prevent script tags
+        if (/<script/i.test(value)) return 'ILLEGAL CHARACTERS DETECTED';
+        return value.length >= 10 
+          ? null 
+          : `MIN 10 CHARS (${value.length}/10)`;
+
+      default: 
+        return null;
     }
-
-    // Email Validation (Proper format)
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Phone Validation (10 digits, starts with 6-9)
-    if (!formData.phone) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
-      newErrors.phone = 'Phone must be 10 digits and start with 6, 7, 8, or 9';
-    }
-
-    // Message Validation (Required, min 10 chars)
-    if (!formData.message) {
-      newErrors.message = 'Message is required';
-    } else if (formData.message.length < 10) {
-      newErrors.message = 'Message must be at least 10 characters long';
-    }
-
-    return newErrors;
   };
 
-  // --- 3. UPDATE handleChange ---
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
-    // Clear the error for this field as the user is typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-    // Clear any server-side error message
-    if (status.error) {
-      setStatus(prev => ({ ...prev, error: null }));
+    
+    // Real-time validation
+    if (touched[name]) {
+      const error = validateField(name, value);
+      setErrors(prev => ({ ...prev, [name]: error }));
     }
   };
 
-  // --- 4. UPDATE handleSubmit ---
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    const error = validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: error }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); // Clear old errors
-    setStatus(prev => ({ ...prev, error: null })); // Clear old server error
+    const newErrors = {};
+    let isValid = true;
 
-    // Run validation
-    const validationErrors = validate();
+    // Validate ALL fields strictly
+    ['name', 'email', 'phone', 'message'].forEach(key => {
+      const error = validateField(key, formData[key]);
+      if (error) {
+        newErrors[key] = error;
+        isValid = false;
+      }
+    });
 
-    // If there are errors, set them and stop the submission
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+    setErrors(newErrors);
+    setTouched({ name: true, email: true, phone: true, message: true });
 
-    // If validation passes, proceed with submission
+    if (!isValid) return;
+
     setStatus({ loading: true, success: false, error: null });
+
+    // 🛡️ SANITIZATION BEFORE SENDING
+    const sanitizedData = {
+      name: formData.name.trim(),
+      email: formData.email.trim().toLowerCase(),
+      phone: formData.phone.trim().replace(/\s+/g, ' '), // Normalize spaces
+      message: formData.message.trim()
+    };
+
     try {
-      await axios.post('http://localhost:5000/api/messages', formData);
+      await api.post('/messages', sanitizedData);
+      
+      // Artificial delay for UX "Processing" feel
+      await new Promise(resolve => setTimeout(resolve, 1500)); 
+      
       setStatus({ loading: false, success: true, error: null });
-      setFormData({ name: '', email: '', message: '', phone: '' });
-      setErrors({}); // Clear errors on success
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      setTouched({});
     } catch (err) {
-      // Use the server's error message if available
-      const errorMsg = err.response?.data?.message || 'Failed to send message.';
-      setStatus({ loading: false, success: false, error: errorMsg });
+      setStatus({ loading: false, success: false, error: 'SERVER UPLINK REFUSED' });
     }
   };
 
-  // --- 5. UPDATED STYLING LOGIC ---
-  // Base input class (removed border colors, will be applied dynamically)
-  const inputBaseClass = 
-    `w-full p-3 pl-10 rounded-lg bg-gray-800 border 
-     text-gray-100 placeholder-gray-500
-     focus:bg-gray-900 focus:ring-1 
-     transition-colors duration-200`;
-  
-  // Function to get dynamic input classes
-  const getInputClass = (fieldName) => {
-    if (errors[fieldName]) {
-      return `${inputBaseClass} border-red-500 focus:border-red-500 focus:ring-red-500`;
-    }
-    return `${inputBaseClass} border-gray-700 focus:border-blue-500 focus:ring-blue-500`;
-  };
+  // --- RENDER HELPERS ---
+  const renderInput = (name, icon, placeholder, type = 'text', isArea = false) => {
+    const hasError = touched[name] && errors[name];
+    const isValid = touched[name] && !errors[name] && formData[name] !== '';
+    
+    const baseBorder = hasError ? "border-red-500/60 shadow-[0_0_15px_rgba(239,68,68,0.25)]" : 
+                       isValid ? "border-emerald-500/60 shadow-[0_0_15px_rgba(16,185,129,0.25)]" : 
+                       "border-slate-700 hover:border-blue-500/50";
 
-  // Function to render error messages
-  const renderError = (fieldName) => (
-    <AnimatePresence>
-      {errors[fieldName] && (
-        <motion.p
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          className="text-red-400 text-sm mt-1 ml-1"
-        >
-          {errors[fieldName]}
-        </motion.p>
-      )}
-    </AnimatePresence>
-  );
+    const IconComp = icon;
 
-  return (
-    <div className="relative">
-      <AnimatePresence mode="wait">
-        {status.success ? (
-          <motion.div
-            key="success"
-            className="flex flex-col items-center justify-center p-6 md:p-8 text-center"
-            variants={successVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            <Check className="w-16 h-16 text-green-500 bg-green-900/50 p-3 rounded-full mb-4" />
-            <h3 className="text-2xl font-bold text-white mb-2">Message Sent!</h3>
-            <p className="text-gray-300 mb-6">Thanks for reaching out. I'll get back to you soon.</p>
-            <button
-              type="button"
-              onClick={() => setStatus({ loading: false, success: false, error: null })}
-              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors"
-            >
-              Send Another
-            </button>
-          </motion.div>
-        ) : (
-          <form
-            key="form"
-            onSubmit={handleSubmit}
-            className="space-y-4" // space-y-4 is fine, errors will create their own space
-            noValidate // Disable native browser validation
-          >
-            {/* --- 6. UPDATED FIELDS WITH ERROR STYLING --- */}
-            
-            {/* Name Field */}
-            <div>
-              <div className="relative">
-                <label htmlFor="name" className="sr-only">Name</label>
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                <input 
-                  type="text" 
-                  name="name" 
-                  id="name"
-                  placeholder="Your Name"
-                  className={getInputClass('name')}
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </div>
-              {renderError('name')}
-            </div>
+    return (
+      <div className="space-y-1.5 relative group">
+        {/* Label Row */}
+        <div className="flex items-end justify-between px-1">
+          <label className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${hasError ? 'text-red-400' : isValid ? 'text-emerald-400' : 'text-slate-500'}`}>
+            {name}
+          </label>
+          
+          {/* Error / Status Text on Right */}
+          <span className={`text-[9px] font-mono tracking-wider uppercase ${hasError ? 'text-red-400' : 'text-slate-600'}`}>
+            {hasError ? errors[name] : isValid ? 'VERIFIED' : 'REQUIRED'}
+          </span>
+        </div>
+        
+        <div className="relative">
+          {/* Input Icon */}
+          <IconComp className={`absolute left-4 ${isArea ? 'top-4' : 'top-1/2 -translate-y-1/2'} w-5 h-5 transition-colors duration-300 ${hasError ? 'text-red-400' : isValid ? 'text-emerald-400' : 'text-slate-500 group-focus-within:text-blue-400'}`} />
+          
+          {isArea ? (
+            <textarea
+              name={name}
+              rows="4"
+              placeholder={placeholder}
+              value={formData[name]}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full bg-[#0B1120] border ${baseBorder} rounded-lg pl-12 pr-10 py-4 text-sm font-mono text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all duration-300`}
+            />
+          ) : (
+            <input
+              type={type}
+              name={name}
+              placeholder={placeholder}
+              value={formData[name]}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full bg-[#0B1120] border ${baseBorder} rounded-lg pl-12 pr-10 py-3.5 text-sm font-mono text-slate-200 placeholder:text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all duration-300`}
+            />
+          )}
 
-            {/* Email Field */}
-            <div>
-              <div className="relative">
-                <label htmlFor="email" className="sr-only">Email</label>
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                <input 
-                  type="email" 
-                  name="email" 
-                  id="email"
-                  placeholder="Your Email"
-                  className={getInputClass('email')}
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-              {renderError('email')}
-            </div>
-
-            {/* Phone Field */}
-            <div>
-              <div className="relative">
-                <label htmlFor="phone" className="sr-only">Phone Number</label>
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                <input 
-                  type="tel" 
-                  name="phone" 
-                  id="phone"
-                  placeholder="Your Phone Number" // Updated placeholder
-                  className={getInputClass('phone')}
-                  value={formData.phone}
-                  onChange={handleChange}
-                />
-              </div>
-              {renderError('phone')}
-            </div>
-
-            {/* Message Field */}
-            <div>
-              <div className="relative">
-                <label htmlFor="message" className="sr-only">Message</label>
-                <MessageSquare className="absolute left-3 top-4 w-5 h-5 text-gray-500" />
-                <textarea 
-                  name="message" 
-                  id="message"
-                  rows="5"
-                  placeholder="Your Message (min. 10 characters)"
-                  className={`${getInputClass('message')} pt-3`}
-                  value={formData.message}
-                  onChange={handleChange}
-                ></textarea>
-              </div>
-              {renderError('message')}
-            </div>
-            
-            {/* Submit Button */}
-            <div>
-              <button 
-                type="submit" 
-                disabled={status.loading}
-                className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md 
-                         hover:bg-blue-700 transition-colors 
-                         disabled:bg-gray-500 disabled:cursor-not-allowed
-                         flex items-center justify-center gap-2"
-              >
-                {status.loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Send className="w-5 h-5" />
-                )}
-                {status.loading ? 'Sending...' : 'Send Message'}
-              </button>
-            </div>
-            
-            {/* General Server Error Message */}
+          {/* Right-Side Status Icon */}
+          <div className={`absolute right-4 ${isArea ? 'top-4' : 'top-1/2 -translate-y-1/2'} transition-all duration-300`}>
             <AnimatePresence>
-              {status.error && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="p-4 text-center text-red-400 bg-red-900/50 rounded-lg"
-                >
-                  {status.error}
+              {hasError && (
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                  <XCircle className="w-5 h-5 text-red-500" />
+                </motion.div>
+              )}
+              {isValid && (
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                  <ShieldCheck className="w-5 h-5 text-emerald-500" />
                 </motion.div>
               )}
             </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="w-full">
+      <AnimatePresence mode="wait">
+        {status.success ? (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="flex flex-col items-center justify-center py-16 text-center bg-[#0B1120] border border-emerald-500/30 rounded-xl relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-[linear-gradient(transparent_0%,rgba(16,185,129,0.1)_50%,transparent_100%)] opacity-20 animate-pulse" />
+            
+            <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
+              <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+            </div>
+            <h3 className="mb-2 text-2xl font-black tracking-tight text-white">DATA SECURED</h3>
+            <p className="mb-8 font-mono text-xs uppercase text-slate-400">Packet sent successfully to server.</p>
+            <button 
+              onClick={() => setStatus({ ...status, success: false })}
+              className="px-8 py-3 text-xs font-bold tracking-widest uppercase transition-all border rounded-md bg-emerald-900/30 border-emerald-500/30 text-emerald-400 hover:bg-emerald-900/50 hover:border-emerald-400"
+            >
+              New Transmission
+            </button>
+          </motion.div>
+        ) : (
+          <form onSubmit={handleSubmit} className="relative space-y-6" noValidate>
+            
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {renderInput('name', User, 'FULL NAME')}
+              {renderInput('email', Mail, 'EMAIL ADDRESS', 'email')}
+            </div>
+
+            {/* Phone Input with enhanced placeholder guidance */}
+            {renderInput('phone', Phone, '+91 98765 43210 (Code Required)', 'tel')}
+            
+            {renderInput('message', MessageSquare, 'PROJECT SPECS / DETAILS...', 'text', true)}
+
+            {/* System Alert Banner */}
+            <AnimatePresence>
+              {Object.keys(errors).some(k => errors[k]) && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }} 
+                  animate={{ height: 'auto', opacity: 1 }} 
+                  exit={{ height: 0, opacity: 0 }}
+                  className="px-4 py-3 border-l-2 border-red-500 rounded-r-lg bg-red-950/30"
+                >
+                  <p className="text-[10px] text-red-400 font-mono font-bold tracking-widest flex items-center gap-2">
+                    <AlertTriangle className="w-3 h-3" /> 
+                    VALIDATION ERROR: CHECK FIELDS FOR RED INDICATORS
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <button 
+              type="submit" 
+              disabled={status.loading}
+              className={`
+                group w-full py-4 font-bold rounded-lg shadow-lg transition-all duration-300 relative overflow-hidden flex items-center justify-center gap-3
+                ${Object.keys(errors).some(k => errors[k]) 
+                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' 
+                  : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(37,99,235,0.6)] transform hover:-translate-y-0.5'}
+              `}
+            >
+              {status.loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 text-white animate-spin" />
+                  <span className="tracking-[0.2em] text-xs">ENCRYPTING & SENDING...</span>
+                </>
+              ) : (
+                <>
+                  <Send className={`w-5 h-5 ${Object.keys(errors).some(k => errors[k]) ? 'text-slate-500' : 'text-blue-200 group-hover:text-white'} transition-colors`} />
+                  <span className="tracking-[0.2em] text-xs">INITIATE SECURE LINK</span>
+                </>
+              )}
+            </button>
           </form>
         )}
       </AnimatePresence>

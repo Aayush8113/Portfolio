@@ -1,23 +1,31 @@
-// src/App.jsx
-import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useState, Suspense, lazy } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Preloader from './components/Preloader'; // <- make sure file name matches!
+import Preloader from './components/Preloader';
 
-// Pages
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import WorkPage from './pages/WorkPage';
-import ProjectDetailPage from './pages/ProjectDetailPage';
-import ContactPage from './pages/ContactPage';
-import ResumePage from './pages/ResumePage';
-import NotFoundPage from './pages/NotFoundPage';
+// --- LAZY LOAD PAGES (Performance Boost) ---
+// The browser will only download these files when needed.
+const HomePage = lazy(() => import('./pages/HomePage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const WorkPage = lazy(() => import('./pages/WorkPage'));
+const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const ResumePage = lazy(() => import('./pages/ResumePage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+
+// Simple Loading Spinner for transitions
+const PageLoader = () => (
+  <div className="flex min-h-[60vh] items-center justify-center">
+    <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-600 border-t-blue-500" />
+  </div>
+);
 
 function App() {
-  // Show preloader initially
   const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
 
   const handleAnimationComplete = () => {
     setIsLoading(false);
@@ -28,24 +36,24 @@ function App() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-900 text-gray-100">
+    <div className="flex min-h-screen flex-col bg-gray-950 text-gray-100 font-sans selection:bg-blue-500/30">
       <Navbar />
 
       <main className="flex-grow">
-        <Routes>
-          {/* Core Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/work" element={<WorkPage />} />
-          <Route path="/work/:id" element={<ProjectDetailPage />} />
-
-          {/* Functional Routes */}
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/resume" element={<ResumePage />} />
-
-          {/* Catch-all */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        {/* Suspense shows the PageLoader while the chunk is downloading */}
+        <Suspense fallback={<PageLoader />}>
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/work" element={<WorkPage />} />
+              <Route path="/work/:id" element={<ProjectDetailPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/resume" element={<ResumePage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </AnimatePresence>
+        </Suspense>
       </main>
 
       <Footer />

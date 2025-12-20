@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="50" fill="#020617" />
+  <circle cx="50" cy="50" r="46" fill="none" stroke="#4f46e5" stroke-width="2" opacity="0.5" />
+  <text x="50" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="800" fill="#e2e8f0" text-anchor="middle" letter-spacing="-2">AT</text>
+  <circle cx="78" cy="28" r="4" fill="#38bdf8" />
+</svg>

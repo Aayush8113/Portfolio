@@ -432,7 +432,7 @@ const cardHoverProps = {
   transition: { type: "spring", stiffness: 300, damping: 20 },
 };
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 // =======================
 // MAIN COMPONENT

@@ -45,14 +45,8 @@
 
 
 
-
-
-
-// /frontend/tailwind.config.js (Enhanced for Premium Effects)
-
 /** @type {import('tailwindcss').Config} */
-import colors from 'tailwindcss/colors'; 
-import defaultTheme from 'tailwindcss/defaultTheme'; 
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 export default {
   content: [
@@ -61,43 +55,55 @@ export default {
   ],
   theme: {
     extend: {
+      // 1. TYPOGRAPHY: Ensure 'Inter' is the default sans font
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
-      },
-      
-      // BRAND COLOR PALETTE (Kept for consistency)
-      colors: {
-        brand: colors.indigo, 
-        accent: colors.cyan,  
-        gray: colors.gray,
-        slate: colors.slate,
-        red: colors.red,
+        mono: ['Fira Code', ...defaultTheme.fontFamily.mono], // Optional: Great for code blocks
       },
 
-      // 💥 NEW: Custom Pulse Animation (Slower, Premium Feel)
+      // 2. COLOR PALETTE EXTENSIONS
+      // We extend the palette to include specific "glass" colors for your cards
+      colors: {
+        glass: {
+          100: 'rgba(255, 255, 255, 0.1)',
+          200: 'rgba(255, 255, 255, 0.2)',
+          300: 'rgba(255, 255, 255, 0.3)',
+        },
+        dark: {
+          900: '#020617', // Matches your body bg
+          800: '#0f172a',
+          700: '#1e293b',
+        }
+      },
+
+      // 3. ANIMATIONS (Cinematic Feels)
+      animation: {
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'spin-slow': 'spin 8s linear infinite',
+      },
       keyframes: {
-        'pulse-slow': {
-          '0%, 100%': { opacity: '0.2', transform: 'scale(1)' },
-          '50%': { opacity: '0.8', transform: 'scale(1.1)' },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
         },
       },
-      animation: {
-        'pulse-slow': 'pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
 
-      // 💥 NEW: Custom Drop Shadow for Text/Logo Polish
+      // 4. EFFECTS
       dropShadow: {
-        'strong-glow': '0 0 18px rgba(129, 140, 248, 0.75)',
+        'glow-blue': '0 0 10px rgba(56, 189, 248, 0.5)',
+        'glow-indigo': '0 0 15px rgba(99, 102, 241, 0.6)',
       },
-      
-      // CUSTOM UTILITIES (Conic Gradient Glow)
       backgroundImage: {
-        'conic-logo-glow': 'conic-gradient(from 180deg at 50% 50%, rgba(79, 70, 229, 0.4) 0deg, rgba(34, 211, 238, 0.4) 180deg, rgba(79, 70, 229, 0.4) 360deg)',
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'conic-logo': 'conic-gradient(from 180deg at 50% 50%, rgba(79, 70, 229, 0.5) 0deg, rgba(34, 211, 238, 0.5) 180deg, rgba(79, 70, 229, 0.5) 360deg)',
       },
     },
   },
   plugins: [
-    require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
+    // Note: 'forms' plugin is great, but often conflicts with custom styled inputs.
+    // If your inputs look weird, try disabling this line.
+    require('@tailwindcss/forms'), 
   ],
 }
