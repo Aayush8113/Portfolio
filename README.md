@@ -70,7 +70,7 @@ npm run dev
 
 GitHub: https://github.com/Aayush8113
 
-LinkedIn: Your Name
+LinkedIn: www.linkedin.com/in/aayushtripathi081103
 
 Email: aayushtripathi.tech@gmail.com
 
