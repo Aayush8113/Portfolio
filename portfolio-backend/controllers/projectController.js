@@ -1,48 +1,52 @@
-// 1. Import the Project model
 const Project = require('../models/Project');
+const mongoose = require('mongoose');
 
-// --- 2. Controller Function: GET all projects ---
-// This function will be triggered by the route GET /api/projects
-const getAllProjects = async (req, res) => {
+// --- 1. GET ALL PROJECTS (Optimized for List View) ---
+const getAllProjects = async (req, res, next) => {
   try {
-    // 3. Find all projects in the database
-    // We use .sort({ createdAt: -1 }) to get the newest projects first
-const projects = await Project.find().sort({ createdAt: -1 });
+    // PERFORMANCE: .lean() converts Mongoose Docs to plain JS objects (Much faster)
+    const projects = await Project.find()
+      .sort({ createdAt: -1 })
+      // Optional: If you have a 'longDescription' field, exclude it here to save bandwidth
+      // .select('-longDescription') 
+      .lean();
 
-    // 4. Send the projects back as a JSON response
-    res.json(projects);
+    // CACHING: Tell the browser/Vercel Edge to cache this response for 5 minutes (300s)
+    // This reduces DB calls significantly.
+    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+
+    res.status(200).json(projects);
 
   } catch (error) {
-    // 5. If anything goes wrong, send a server error
-    console.error('Error fetching projects:', error);
-    res.status(500).json({ message: 'Server Error' });
+    // Pass to the Global Error Handler we created in server.js
+    next(error);
   }
 };
 
-// --- 6. Controller Function: GET a single project by ID ---
-// This function will be triggered by the route GET /api/projects/:id
-const getProjectById = async (req, res) => {
+// --- 2. GET SINGLE PROJECT (With Validation) ---
+const getProjectById = async (req, res, next) => {
   try {
-    // 7. Find one project in the database using its 'id'
-    // The id comes from the URL (req.params.id)
-    const project = await Project.findById(req.params.id);
+    const { id } = req.params;
 
-    // 8. If no project is found, send a 404 (Not Found) error
+    // VALIDATION: Prevent app crash if ID is invalid format (e.g., "123")
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: 'Invalid Project ID' });
+    }
+
+    const project = await Project.findById(id).lean();
+
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
 
-    // 9. Send the single project back as a JSON response
-    res.json(project);
+    // No cache for details page (or shorter cache) to ensure fresh data
+    res.status(200).json(project);
 
   } catch (error) {
-    // 10. If the ID is badly formatted or another error occurs, send a server error
-    console.error('Error fetching project by ID:', error);
-    res.status(500).json({ message: 'Server Error' });
+    next(error);
   }
 };
 
-// --- 11. Export the functions ---
 module.exports = {
   getAllProjects,
   getProjectById,

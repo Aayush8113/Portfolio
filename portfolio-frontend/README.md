@@ -1,18 +1,34 @@
-# React + Vite
+# 🚀 Professional MERN Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A high-performance, full-stack portfolio application built with the **MERN Stack** (MongoDB, Express, React, Node.js). Designed for scalability, security, and a "pure smooth" user experience using serverless architecture optimizations.
 
-Currently, two official plugins are available:
+## 🏗 Architecture & Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### **Frontend (Client)**
+* **Framework:** React + Vite (Fast Build Tool)
+* **Animations:** Framer Motion (Page transitions, Magnetic Cursors)
+* **Styling:** Tailwind CSS
+* **Performance:**
+    * **Lazy Loading:** Route-splitting to reduce initial bundle size.
+    * **Error Boundaries:** Prevents white-screen crashes.
+    * **Axios Interceptors:** Centralized error handling and response unwrapping.
+    * **Custom Cursors:** Physics-based interactions using `useSpring`.
 
-## React Compiler
+### **Backend (API)**
+* **Runtime:** Node.js (Express) optimized for **Vercel Serverless**.
+* **Database:** MongoDB Atlas (Mongoose) with **Connection Caching**.
+* **Security:**
+    * **Helmet:** Secure HTTP Headers.
+    * **Rate Limiting:** DDoS/Spam protection for API routes.
+    * **XSS Sanitization:** Inputs are stripped of malicious scripts.
+    * **CORS:** Smart origin handling for Vercel & Localhost.
+* **Utilities:** `nodemailer` for contact form handling.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
+## 🛠 Installation & Setup
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Clone the Repository
+```bash
+git clone <your-repo-url>
+cd your-project-folder

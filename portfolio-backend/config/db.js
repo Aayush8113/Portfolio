@@ -20,6 +20,9 @@ const connectDB = async () => {
       bufferCommands: false, // Disable Mongoose buffering for faster serverless errors
     };
 
+    // Strict Query prevents fields not in your schema from being saved silently
+    mongoose.set('strictQuery', true);
+
     cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {
       console.log('✅ New MongoDB Connection Established');
       return mongoose;

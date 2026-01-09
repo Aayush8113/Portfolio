@@ -1,33 +1,86 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     
-    <title>Aayush Tripathi | Full Stack MERN Developer</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    
-    <meta name="description" content="Portfolio of Aayush Tripathi, a Full Stack Developer specializing in the MERN stack (MongoDB, Express, React, Node.js). Building scalable, high-performance web applications." />
-    <meta name="keywords" content="Aayush Tripathi, Full Stack Developer, MERN Stack, React Developer, Node.js, Portfolio, Web Development, Ahmedabad" />
+    <title>Aayush Tripathi | Senior MERN Stack Architect</title>
+    <meta name="description" content="Portfolio of Aayush Tripathi. Engineering high-performance, scalable distributed systems using the MERN stack (MongoDB, Express, React, Node.js)." />
+    <meta name="keywords" content="Aayush Tripathi, Senior Full Stack Developer, MERN Architect, React Performance, Node.js Scaling, System Design, Ahmedabad" />
     <meta name="author" content="Aayush Tripathi" />
     <meta name="theme-color" content="#020617" />
 
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Aayush Tripathi | Full Stack Developer" />
-    <meta property="og:description" content="Building scalable, high-performance web applications with the MERN stack. Check out my latest projects." />
-    <meta property="og:image" content="/og-image.png" /> <meta property="og:url" content="https://your-portfolio.vercel.app/" />
+    <meta property="og:url" content="https://aayush-tripathi.dev/" />
+    <meta property="og:title" content="Aayush Tripathi | Senior MERN Architect" />
+    <meta property="og:description" content="Building next-gen digital experiences with precision engineering. View my architectural case studies and deployment logs." />
+    <meta property="og:image" content="/og-image.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Aayush Tripathi | Full Stack Developer" />
-    <meta name="twitter:description" content="MERN Stack Developer focused on clean code and performance." />
+    <meta name="twitter:title" content="Aayush Tripathi | Senior MERN Architect" />
+    <meta name="twitter:description" content="Full Stack Engineer obsessed with performance, clean architecture, and scalability." />
+    <meta name="twitter:image" content="/og-image.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+      :root {
+        background-color: #020617;
+        color: #e2e8f0;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #020617; /* Matches Tailwind slate-950 */
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* Simple CSS loader for instant feedback before JS parses */
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #020617;
+        z-index: 99999;
+        transition: opacity 0.5s ease-out;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(59, 130, 246, 0.3);
+        border-radius: 50%;
+        border-top-color: #3b82f6;
+        animation: spin 1s ease-in-out infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   
-  <body style="background-color: #020617; margin: 0;">
-    <div id="root"></div>
+  <body>
+    <noscript>
+      <div style="padding: 20px; text-align: center; color: white;">
+        <h1>JavaScript Required</h1>
+        <p>This application requires JavaScript to perform system initialization.</p>
+      </div>
+    </noscript>
+
+    <div id="root">
+      <div id="initial-loader">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

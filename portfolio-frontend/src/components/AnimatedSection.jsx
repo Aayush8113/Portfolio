@@ -1,59 +1,121 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from "framer-motion";
+import PropTypes from "prop-types";
+import React, { forwardRef, useMemo } from "react";
 
 /**
- * AnimatedSection component for Scroll-Reveal effects.
- * Wraps content and animates it into view when scrolled to.
- *
- * @param {object} props
- * @param {React.ReactNode} props.children - The content to be animated.
- * @param {number} [props.delay=0] - Stagger delay before the animation starts (in seconds).
- * @param {number} [props.yOffset=40] - The starting offset distance on the Y-axis (e.g., 40px down).
- * @param {number} [props.duration=0.9] - The duration of the visible transition (in seconds).
- * @param {number} [props.amount=0.15] - The percentage of the element that must be visible to trigger the animation.
+ * @constant {Array} CINEMATIC_EASE
+ * Custom Bezier curve: Starts fast, decelerates smoothly.
  */
-const AnimatedSection = ({ children, delay = 0, yOffset = 40, duration = 0.9, amount = 0.15 }) => {
-  
-  // Define the animation variants
-  const sectionVariants = {
-    // The "hidden" state: element is invisible and slides up from yOffset
-    hidden: { 
-      opacity: 0, 
-      y: yOffset, 
-    },
-    // The "visible" state: element is fully visible at its normal position
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        // --- IMPROVED TIMING & EASING ---
-        // Slower duration for a more deliberate feel, using a strong decelerate ease.
-        duration: duration, 
-        ease: [0.4, 0.0, 0.2, 1], // Professional decelerate ease (smooth stop)
-        delay: delay, 
-      }
-    },
-  };
+const CINEMATIC_EASE = [0.25, 0.46, 0.45, 0.94];
 
-  return (
-    <motion.div
-      className="w-full"
-      // Pass the variants we defined
-      variants={sectionVariants}
-      // Set the initial state to 'hidden'
-      initial="hidden"
-      // Animate to 'visible' when it's "in view"
-      whileInView="visible"
-      // 'viewport' settings
-      viewport={{ 
-        // Amount customizable via props (default 15%)
-        amount: amount, 
-        once: true, // Only animate it *once* when it appears
-      }}
-    >
-      {children}
-    </motion.div>
-  );
+/**
+ * AnimatedSection 3.0 (Architect Grade)
+ * * A high-performance, accessible wrapper for scroll reveals.
+ * Automatically handles 'prefers-reduced-motion' settings.
+ */
+const AnimatedSection = forwardRef(
+  (
+    {
+      children,
+      className = "",
+      delay = 0,
+      duration = 0.8,
+      distance = 30,
+      direction = "up",
+      scale = 1,
+      blur = true,
+      threshold = 0.2,
+      ...props // Pass through rest props (id, onClick, aria-*, etc.)
+    },
+    ref,
+  ) => {
+    // 1. Accessibility: Respect user's system motion settings
+    const shouldReduceMotion = useReducedMotion();
+
+    // 2. Memoize variants to prevent re-calculation on every render
+    const variants = useMemo(() => {
+      // If user prefers reduced motion, simplify to a basic fade
+      if (shouldReduceMotion) {
+        return {
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: { duration: 0.5, delay },
+          },
+        };
+      }
+
+      // Direction Coordinate Map
+      const directionMap = {
+        up: { y: distance },
+        down: { y: -distance },
+        left: { x: distance }, // Starts right, moves left
+        right: { x: -distance }, // Starts left, moves right
+        none: { x: 0, y: 0 },
+      };
+
+      const { x = 0, y = 0 } = directionMap[direction] || {};
+
+      return {
+        hidden: {
+          opacity: 0,
+          x,
+          y,
+          scale,
+          // Using 'blur' triggers GPU compositing.
+          // We condition it to save resources if disabled.
+          filter: blur ? "blur(8px)" : "none",
+        },
+        visible: {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          // Explicitly set 'none' to ensure text is crisp after animation
+          filter: "none",
+          transition: {
+            duration,
+            ease: CINEMATIC_EASE,
+            delay,
+          },
+        },
+      };
+    }, [direction, distance, scale, blur, duration, delay, shouldReduceMotion]);
+
+    return (
+      <motion.div
+        ref={ref}
+        className={className}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{
+          once: true,
+          amount: threshold,
+          margin: "0px 0px -50px 0px",
+        }} // Added margin for smoother trigger
+        variants={variants}
+        {...props}
+      >
+        {children}
+      </motion.div>
+    );
+  },
+);
+
+// 3. Debugging Name
+AnimatedSection.displayName = "AnimatedSection";
+
+// 4. Runtime Type Checking (Vital for large teams)
+AnimatedSection.propTypes = {
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+  delay: PropTypes.number,
+  duration: PropTypes.number,
+  distance: PropTypes.number,
+  direction: PropTypes.oneOf(["up", "down", "left", "right", "none"]),
+  scale: PropTypes.number,
+  blur: PropTypes.bool,
+  threshold: PropTypes.number,
 };
 
-export default AnimatedSection;
+export default React.memo(AnimatedSection);

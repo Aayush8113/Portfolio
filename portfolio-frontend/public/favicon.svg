@@ -1,6 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="50" fill="#020617" />
-  <circle cx="50" cy="50" r="46" fill="none" stroke="#4f46e5" stroke-width="2" opacity="0.5" />
-  <text x="50" y="66" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="800" fill="#e2e8f0" text-anchor="middle" letter-spacing="-2">AT</text>
-  <circle cx="78" cy="28" r="4" fill="#38bdf8" />
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="16" fill="#0f172a"/> <path d="M32 8L16 52H26L32 36L38 52H48L32 8Z" fill="url(#paint0_linear)"/>
+  <path d="M22 36H42" stroke="url(#paint1_linear)" stroke-width="4" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="paint0_linear" x1="32" y1="8" x2="32" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/> <stop offset="1" stop-color="#34D399"/> </linearGradient>
+    <linearGradient id="paint1_linear" x1="22" y1="36.5" x2="42" y2="36.5" gradientUnits="userSpaceOnUse">
+       <stop stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+  </defs>
 </svg>
