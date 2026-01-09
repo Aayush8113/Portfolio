@@ -44,27 +44,63 @@ A professional, high-performance multipage portfolio application. This project f
     ├── src/context/         # SoundContext for global state
     └── public/projects/     # High-quality WebP project assets
 ```
-🚀 Local Deployment
+🚀 Getting Started: Portfolio Setup
+Follow these steps to get the development environment running on your local machine.
 
-1. Clone the repository
-Bash
-git clone [https://github.com/aayush8113/Portfolio.git](https://github.com/aayush8113/Portfolio.git)
-
-2. Backend Configuration
-Navigate to the backend folder, install dependencies, and set up your environment:
+1. Clone the Repository
+First, bring the project to your local machine using Git:
 
 Bash
+
+git clone https://github.com/aayush8113/Portfolio.git
+cd Portfolio
+2. Backend Configuration (Node.js/Express)
+The backend handles your data and email services.
+
+Navigate to the directory:
+
+Bash
+
 cd portfolio-backend
-npm install
-# Create a .env file and add your MONGO_URI, EMAIL_USER, and EMAIL_PASS
-npm start
+Install dependencies:
 
-3. Frontend Configuration
-Navigate to the frontend folder and start the Vite development server:
 Bash
-cd portfolio-frontend
+
 npm install
+Environment Variables: Create a .env file in the portfolio-backend root folder and add the following:
+
+Code snippet
+
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_specific_password
+Start the server:
+
+Bash
+
+npm start
+Note: The backend usually runs on http://localhost:5000.
+
+3. Frontend Configuration (React + Vite)
+The frontend provides the user interface.
+
+Navigate to the directory:
+
+Bash
+
+cd ../portfolio-frontend
+Install dependencies:
+
+Bash
+
+npm install
+Launch the development server:
+
+Bash
+
 npm run dev
+Tip: Open http://localhost:5173 in your browser to view your portfolio.
 
 📬 Contact & Socials
 
