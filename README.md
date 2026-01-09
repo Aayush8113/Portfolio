@@ -67,6 +67,7 @@ Install dependencies:
 Bash
 
 npm install
+
 Environment Variables: Create a .env file in the portfolio-backend root folder and add the following:
 
 Code snippet
@@ -95,11 +96,13 @@ Install dependencies:
 Bash
 
 npm install
+
 Launch the development server:
 
 Bash
 
 npm run dev
+
 Tip: Open http://localhost:5173 in your browser to view your portfolio.
 
 📬 Contact & Socials
