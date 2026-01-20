@@ -119,5 +119,3 @@ Built with precision using the MERN Stack.
 
 
 ***
-
-**Would you like me to create the exact text for your `vercel.json` file to make sure your API routes work when you host it?**
